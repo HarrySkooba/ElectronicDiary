@@ -2,7 +2,8 @@
 {
     internal class DB
     {
-        static ElectronicDiaryContext instance;
+        
+        static ElectronicDiaryContext? instance;
         public static ElectronicDiaryContext Instance
         {
             get
@@ -12,5 +13,6 @@
                 return instance;
             }
         }
+        
     }
 }
