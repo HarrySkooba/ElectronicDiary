@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Server.Models.DatabaseModel;
+namespace Server;
 
 public partial class User
 {
@@ -9,7 +9,7 @@ public partial class User
 
     public string Login { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
+    public byte[] PasswordHash { get; set; } = null!;
 
     public int RoleId { get; set; }
 
@@ -20,6 +20,8 @@ public partial class User
     public DateTime? LastLogin { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+
+    public byte[] Salt { get; set; } = null!;
 
     public virtual Person Person { get; set; } = null!;
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Server.Models.DatabaseModel;
 
-namespace Server.Models.Context;
+namespace Server;
 
 public partial class ElectronicDiaryContext : DbContext
 {
@@ -39,6 +38,7 @@ public partial class ElectronicDiaryContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ElectronicDiary;Username=postgres;Password=3434");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,11 +59,12 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.HasOne(d => d.ClassTeacher).WithMany(p => p.Classes)
                 .HasForeignKey(d => d.ClassTeacherId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("classes_class_teacher_id_fkey");
 
             entity.HasOne(d => d.School).WithMany(p => p.Classes)
                 .HasForeignKey(d => d.SchoolId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("classes_school_id_fkey");
         });
 
@@ -75,18 +76,16 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ClassId).HasColumnName("class_id");
-            entity.Property(e => e.EnrollmentDate).HasColumnName("enrollment_date");
-            entity.Property(e => e.LeaveDate).HasColumnName("leave_date");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
 
             entity.HasOne(d => d.Class).WithMany(p => p.ClassStudents)
                 .HasForeignKey(d => d.ClassId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("class_students_class_id_fkey");
 
             entity.HasOne(d => d.Student).WithMany(p => p.ClassStudents)
                 .HasForeignKey(d => d.StudentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("class_students_student_id_fkey");
         });
 
@@ -111,17 +110,17 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.HasOne(d => d.Student).WithMany(p => p.GradeStudents)
                 .HasForeignKey(d => d.StudentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("grades_student_id_fkey");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("grades_subject_id_fkey");
 
             entity.HasOne(d => d.Teacher).WithMany(p => p.GradeTeachers)
                 .HasForeignKey(d => d.TeacherId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("grades_teacher_id_fkey");
         });
 
@@ -149,17 +148,17 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.HasOne(d => d.Class).WithMany(p => p.Homeworks)
                 .HasForeignKey(d => d.ClassId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("homeworks_class_id_fkey");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.Homeworks)
                 .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("homeworks_subject_id_fkey");
 
             entity.HasOne(d => d.Teacher).WithMany(p => p.Homeworks)
                 .HasForeignKey(d => d.TeacherId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("homeworks_teacher_id_fkey");
         });
 
@@ -192,6 +191,12 @@ public partial class ElectronicDiaryContext : DbContext
             entity.Property(e => e.PhotoUrl)
                 .HasMaxLength(255)
                 .HasColumnName("photo_url");
+            entity.Property(e => e.Schoolid).HasColumnName("schoolid");
+
+            entity.HasOne(d => d.School).WithMany(p => p.People)
+                .HasForeignKey(d => d.Schoolid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("persons_schools_fk");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -229,17 +234,17 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.HasOne(d => d.Class).WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.ClassId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("schedule_class_id_fkey");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("schedule_subject_id_fkey");
 
             entity.HasOne(d => d.Teacher).WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.TeacherId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("schedule_teacher_id_fkey");
         });
 
@@ -266,6 +271,7 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.HasOne(d => d.Director).WithMany(p => p.Schools)
                 .HasForeignKey(d => d.DirectorId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("schools_director_id_fkey");
         });
 
@@ -298,17 +304,17 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.HasOne(d => d.Class).WithMany(p => p.SubjectTeachers)
                 .HasForeignKey(d => d.ClassId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("subject_teachers_class_id_fkey");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.SubjectTeachers)
                 .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("subject_teachers_subject_id_fkey");
 
             entity.HasOne(d => d.Teacher).WithMany(p => p.SubjectTeachers)
                 .HasForeignKey(d => d.TeacherId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("subject_teachers_teacher_id_fkey");
         });
 
@@ -334,20 +340,19 @@ public partial class ElectronicDiaryContext : DbContext
             entity.Property(e => e.Login)
                 .HasMaxLength(50)
                 .HasColumnName("login");
-            entity.Property(e => e.PasswordHash)
-                .HasMaxLength(255)
-                .HasColumnName("password_hash");
+            entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.PersonId).HasColumnName("person_id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.Property(e => e.Salt).HasColumnName("salt");
 
             entity.HasOne(d => d.Person).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("users_person_id_fkey");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("users_role_id_fkey");
         });
 

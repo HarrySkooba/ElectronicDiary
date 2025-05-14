@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Server.Models.DatabaseModel;
+namespace Server;
 
 public partial class Homework
 {

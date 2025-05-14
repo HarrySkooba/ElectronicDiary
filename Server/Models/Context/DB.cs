@@ -1,6 +1,6 @@
 ﻿namespace Server.Models.Context
 {
-    internal class DB
+   internal class DB
     {
         
         static ElectronicDiaryContext? instance;

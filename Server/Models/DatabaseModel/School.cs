@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Server.Models.DatabaseModel;
+namespace Server;
 
 public partial class School
 {
@@ -20,4 +20,6 @@ public partial class School
     public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 
     public virtual Person? Director { get; set; }
+
+    public virtual ICollection<Person> People { get; set; } = new List<Person>();
 }

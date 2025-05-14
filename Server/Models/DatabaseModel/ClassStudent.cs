@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Server.Models.DatabaseModel;
+namespace Server;
 
 public partial class ClassStudent
 {
@@ -10,10 +10,6 @@ public partial class ClassStudent
     public int ClassId { get; set; }
 
     public int StudentId { get; set; }
-
-    public DateOnly EnrollmentDate { get; set; }
-
-    public DateOnly? LeaveDate { get; set; }
 
     public virtual Class Class { get; set; } = null!;
 
