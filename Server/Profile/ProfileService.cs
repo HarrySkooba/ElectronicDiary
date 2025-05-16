@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Server.Models.Context;
 using Server.Models.DTO;
+using Server.Utils;
+
 
 namespace Server.Profile
 {
@@ -28,16 +29,19 @@ namespace Server.Profile
             if (user == null)
                 throw new KeyNotFoundException("Пользователь не найден");
 
+            if (user?.Person == null)
+                throw new KeyNotFoundException("Данные пользователя не найдены");
+
             return new ProfileResponseDTO
             {
-                FirstName = user.Person.FirstName,
-                LastName = user.Person.LastName,
-                MiddleName = user.Person.MiddleName,
-                BirthDate = user.Person.BirthDate.ToString(),
-                Email = user.Person.Email,
-                Phone = user.Person.Phone,
-                Addres = user.Person.Address,
-                PhotoUrl = user.Person.PhotoUrl
+                FirstName = user.Person.FirstName.GetValueOrDefault(),
+                LastName = user.Person.LastName.GetValueOrDefault(),
+                MiddleName = user.Person.MiddleName.GetValueOrDefault(),
+                BirthDate = user.Person.BirthDate.GetValueOrDefaultDate(),
+                Email = user.Person.Email.GetValueOrDefault(),
+                Phone = user.Person.Phone.GetValueOrDefault(),
+                Address = user.Person.Address.GetValueOrDefault(),
+                PhotoUrl = user.Person.PhotoUrl.GetValueOrDefault("default-avatar.jpg")
             };
         }
 
@@ -54,15 +58,21 @@ namespace Server.Profile
             if (user == null)
                 throw new KeyNotFoundException("Пользователь не найден");
 
+            if (user?.Person == null)
+                throw new KeyNotFoundException("Данные пользователя не найдены");
+
+            if (user.Person.School == null)
+                throw new KeyNotFoundException("Школа не найдена");
+
             return new SchoolResponseDTO
             {
-               SchoolName = user.Person.School.Name,
-               SchoolAddres = user.Person.School.Address,
-               SchoolPhone = user.Person.School.Phone,
-               DirectorFirstName = user.Person.School.Director.FirstName,
-               DirectorLastName = user.Person.School.Director.LastName,
-               DirectorMiddleName = user.Person.School.Director.MiddleName,
-               SchoolWebsite = user.Person.School.Website
+                SchoolName = user.Person.School?.Name.GetValueOrDefault(),
+                SchoolAddress = user.Person.School?.Address.GetValueOrDefault(),
+                SchoolPhone = user.Person.School?.Phone.GetValueOrDefault(),
+                DirectorFirstName = user.Person.School?.Director?.FirstName.GetValueOrDefault(),
+                DirectorLastName = user.Person.School?.Director?.LastName.GetValueOrDefault(),
+                DirectorMiddleName = user.Person.School?.Director?.MiddleName.GetValueOrDefault(),
+                SchoolWebsite = user.Person.School?.Website.GetValueOrDefault()
             };
         }
 
@@ -103,23 +113,23 @@ namespace Server.Profile
             {
             new StudentDto
             {
-
-            FirstNameStudent = user.Person.FirstName,
-            LastNameStudent = user.Person.LastName,
-            MiddleNameStudent = user.Person.MiddleName ?? string.Empty,
+            FirstNameStudent = user.Person.FirstName.GetValueOrDefault(),
+            LastNameStudent = user.Person.LastName.GetValueOrDefault(),
+            MiddleNameStudent = user.Person.MiddleName.GetValueOrDefault(),
             }
             };
 
             students.AddRange(classmates.Select(cs => new StudentDto
             {
-                FirstNameStudent = cs.Student.FirstName,
-                LastNameStudent = cs.Student.LastName,
-                MiddleNameStudent = cs.Student.MiddleName ?? string.Empty,
+                Id = cs.StudentId,
+                FirstNameStudent = cs.Student.FirstName.GetValueOrDefault(),
+                LastNameStudent = cs.Student.LastName.GetValueOrDefault(),
+                MiddleNameStudent = cs.Student.MiddleName.GetValueOrDefault()
             }));
 
             return new ClassResponseDTO
             {
-                ClassName = classStudent.Class.Name,
+                ClassName = classStudent.Class.Name.GetValueOrDefault(),
                 ClassTeacherName = classStudent.Class.ClassTeacher != null
                     ? $"{classStudent.Class.ClassTeacher.LastName} {classStudent.Class.ClassTeacher.FirstName} {classStudent.Class.ClassTeacher.MiddleName}"
                     : "Классный руководитель не назначен",

@@ -1,10 +1,13 @@
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server;
+using Server.Attributes;
 using Server.Models.Context;
 using Server.Profile;
+using Server.Timetable;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,10 +70,25 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("TeacherOrHigher", policy =>
+        policy.RequireRole("Admin", "Director", "Teacher"));
+
+    options.AddPolicy("Student", policy =>
+        policy.RequireRole("Student", "Teacher", "Admin"));
+
+    options.AddPolicy("Parent", policy =>
+        policy.RequireRole("Parent", "Teacher", "Admin"));
+});
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<ITimetableService, TimetableService>();
 
 var app = builder.Build();
 

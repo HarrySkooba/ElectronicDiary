@@ -8,14 +8,14 @@
         public string BirthDate { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public string Addres { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
         public string PhotoUrl { get; set; } = string.Empty;
     }
 
     public class SchoolResponseDTO
     {
         public string SchoolName { get; set; } = string.Empty;
-        public string SchoolAddres { get; set; } = string.Empty;
+        public string SchoolAddress { get; set; } = string.Empty;
         public string SchoolPhone { get; set; } = string.Empty;
         public string DirectorFirstName { get; set; } = string.Empty;
         public string DirectorLastName { get; set; } = string.Empty;
@@ -33,6 +33,7 @@
 
     public class StudentDto
     {
+        public int Id { get; set; }
         public string FirstNameStudent { get; set; } = string.Empty;
         public string LastNameStudent { get; set; } = string.Empty;
         public string MiddleNameStudent { get; set; } = string.Empty;
