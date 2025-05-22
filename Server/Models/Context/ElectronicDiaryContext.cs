@@ -21,7 +21,7 @@ public partial class ElectronicDiaryContext : DbContext
 
     public virtual DbSet<Grade> Grades { get; set; }
 
-    public virtual DbSet<Homework> Homeworks { get; set; }
+    public virtual DbSet<Lesson> Lessons { get; set; }
 
     public virtual DbSet<Person> Persons { get; set; }
 
@@ -38,6 +38,7 @@ public partial class ElectronicDiaryContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ElectronicDiary;Username=postgres;Password=3434");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -95,70 +96,42 @@ public partial class ElectronicDiaryContext : DbContext
             entity.ToTable("grades");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Comment)
-                .HasMaxLength(255)
-                .HasColumnName("comment");
-            entity.Property(e => e.Date).HasColumnName("date");
-            entity.Property(e => e.GradeType).HasColumnName("grade_type");
-            entity.Property(e => e.GradeValue)
-                .HasPrecision(3, 1)
-                .HasColumnName("grade_value");
+            entity.Property(e => e.Comment).HasColumnName("comment");
+            entity.Property(e => e.LessonId).HasColumnName("lesson_id");
+            entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
-            entity.Property(e => e.SubjectId).HasColumnName("subject_id");
-            entity.Property(e => e.TeacherId).HasColumnName("teacher_id");
+            entity.Property(e => e.WasPresent)
+                .HasDefaultValue(true)
+                .HasColumnName("was_present");
 
-            entity.HasOne(d => d.Student).WithMany(p => p.GradeStudents)
+            entity.HasOne(d => d.Lesson).WithMany(p => p.Grades)
+                .HasForeignKey(d => d.LessonId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_grades_lessons");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.StudentId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("grades_student_id_fkey");
-
-            entity.HasOne(d => d.Subject).WithMany(p => p.Grades)
-                .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("grades_subject_id_fkey");
-
-            entity.HasOne(d => d.Teacher).WithMany(p => p.GradeTeachers)
-                .HasForeignKey(d => d.TeacherId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("grades_teacher_id_fkey");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_grades_students");
         });
 
-        modelBuilder.Entity<Homework>(entity =>
+        modelBuilder.Entity<Lesson>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("homeworks_pkey");
+            entity.HasKey(e => e.Id).HasName("lessons_pkey");
 
-            entity.ToTable("homeworks");
+            entity.ToTable("lessons");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ClassId).HasColumnName("class_id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+            entity.Property(e => e.Date)
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.DueDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("due_date");
-            entity.Property(e => e.SubjectId).HasColumnName("subject_id");
-            entity.Property(e => e.TeacherId).HasColumnName("teacher_id");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
+                .HasColumnName("date");
+            entity.Property(e => e.Homework).HasColumnName("homework");
+            entity.Property(e => e.ScheduleId).HasColumnName("schedule_id");
 
-            entity.HasOne(d => d.Class).WithMany(p => p.Homeworks)
-                .HasForeignKey(d => d.ClassId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("homeworks_class_id_fkey");
-
-            entity.HasOne(d => d.Subject).WithMany(p => p.Homeworks)
-                .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("homeworks_subject_id_fkey");
-
-            entity.HasOne(d => d.Teacher).WithMany(p => p.Homeworks)
-                .HasForeignKey(d => d.TeacherId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("homeworks_teacher_id_fkey");
+            entity.HasOne(d => d.Schedule).WithMany(p => p.Lessons)
+                .HasForeignKey(d => d.ScheduleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_lessons_schedule");
         });
 
         modelBuilder.Entity<Person>(entity =>
@@ -221,6 +194,7 @@ public partial class ElectronicDiaryContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ClassId).HasColumnName("class_id");
+            entity.Property(e => e.DateTimetable).HasColumnName("date_timetable");
             entity.Property(e => e.DayOfWeek).HasColumnName("day_of_week");
             entity.Property(e => e.EndTime).HasColumnName("end_time");
             entity.Property(e => e.LessonNumber).HasColumnName("lesson_number");

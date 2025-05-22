@@ -11,18 +11,14 @@
         public TimeOnly Start_Time { get; set; }
         public TimeOnly End_Time { get; set; }
         public string ClassName { get; set; } = string.Empty;
+        public DateOnly Date { get; set; }
     }
 
-    public class ScheduleEditDTO
+    public class ScheduleDayDto
     {
-        public int? Id { get; set; } 
-        public int ClassId { get; set; }
-        public int SubjectId { get; set; }
-        public int TeacherId { get; set; }
-        public int DayOfWeek { get; set; } 
-        public int LessonNumber { get; set; } 
-        public string? Room { get; set; }
-        public TimeOnly StartTime { get; set; }
-        public TimeOnly EndTime { get; set; }
+        public DateOnly Date { get; set; }
+        public int DayOfWeek { get; set; }
+        public string DayName { get; set; } = string.Empty;
+        public List<ScheduleDTO> Lessons { get; set; } = new();
     }
 }

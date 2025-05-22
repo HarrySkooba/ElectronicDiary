@@ -40,32 +40,13 @@ namespace Server.Controllers
 
         [HttpPost("edit")]
         [AuthorizeRole("Admin", "Director")]
-        public async Task<IActionResult> CreateOrUpdateSchedule([FromBody] ScheduleEditDTO scheduleDto)
+        public async Task<IActionResult> UpdateSchedule([FromBody] List<ScheduleDayDto> schedule)
         {
-            try
-            {
-                var timeConflict = await _context.Schedules
-                    .AnyAsync(s => s.ClassId == scheduleDto.ClassId &&
-                                  s.DayOfWeek == scheduleDto.DayOfWeek &&
-                                  s.Id != scheduleDto.Id &&
-                                  ((s.StartTime < scheduleDto.EndTime && s.EndTime > scheduleDto.StartTime)));
+            var result = await _timetableService.CreateOrUpdateSchedule(schedule);
+            if (result.IsSuccess)
+                return Ok(result.Message);
 
-                if (timeConflict)
-                    return BadRequest("Время урока пересекается с существующим расписанием");
-
-                var result = await _timetableService.CreateOrUpdateSchedule(scheduleDto);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return ex switch
-                {
-                    ArgumentException => BadRequest(ex.Message),
-                    KeyNotFoundException => NotFound(ex.Message),
-                    InvalidOperationException => BadRequest(ex.Message),
-                    _ => StatusCode(500, "Ошибка сервера")
-                };
-            }
+            return BadRequest(result.Message);
         }
     }
 }

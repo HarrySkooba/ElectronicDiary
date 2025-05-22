@@ -29,11 +29,7 @@ public partial class Person
 
     public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 
-    public virtual ICollection<Grade> GradeStudents { get; set; } = new List<Grade>();
-
-    public virtual ICollection<Grade> GradeTeachers { get; set; } = new List<Grade>();
-
-    public virtual ICollection<Homework> Homeworks { get; set; } = new List<Homework>();
+    public virtual ICollection<Grade> Grades { get; set; } = new List<Grade>();
 
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 

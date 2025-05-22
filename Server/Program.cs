@@ -1,13 +1,11 @@
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server;
-using Server.Attributes;
-using Server.Models.Context;
 using Server.Profile;
 using Server.Timetable;
+using Server.Lessons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +87,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ITimetableService, TimetableService>();
+builder.Services.AddScoped<IGradeService, GradeService>();
 
 var app = builder.Build();
 

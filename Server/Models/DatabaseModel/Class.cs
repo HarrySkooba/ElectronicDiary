@@ -19,8 +19,6 @@ public partial class Class
 
     public virtual Person? ClassTeacher { get; set; }
 
-    public virtual ICollection<Homework> Homeworks { get; set; } = new List<Homework>();
-
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
     public virtual School School { get; set; } = null!;
