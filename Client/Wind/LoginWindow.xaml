@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Client"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Сетевой Дневник»" Height="515" Width="365" FontFamily="Times New Roman" FontSize="20" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Сетевой Дневник»" Height="515" Width="365" FontFamily="Times New Roman" FontSize="20" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon= "file:///F:/Electronic Diary/Client/photo/icon.png">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#4993DC"/>
@@ -194,7 +194,7 @@
             </StackPanel>
         </Grid>
         <Grid Name="Logo" Background="Transparent"  Grid.Row="1" MouseDown="Logo_MouseDown">
-           
+
         </Grid>
         <TextBox Text="{Binding login}" x:Name="tb1" Grid.Row="2" Style="{StaticResource TB}" Margin="25, 45, 25 ,0" VerticalAlignment="Top"/>
         <TextBlock x:Name="Login" IsHitTestVisible="False" FontSize="14" Text="Логин" Grid.Row="2" Margin="46, 54, 0, 0" VerticalAlignment="Top" Foreground="Gray">
@@ -226,7 +226,7 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <Button Click="Auth_Button" Content="Войти" FontSize="15" Foreground="White" Style="{StaticResource Combobox}">
+            <Button x:Name="AuthButton" Click="Auth_Button" Content="Войти" FontSize="15" Foreground="White" Style="{StaticResource Combobox}">
             </Button>
         </Border>
     </Grid>

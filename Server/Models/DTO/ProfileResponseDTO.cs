@@ -11,7 +11,6 @@
         public string Address { get; set; } = string.Empty;
         public string PhotoUrl { get; set; } = string.Empty;
     }
-
     public class SchoolResponseDTO
     {
         public string SchoolName { get; set; } = string.Empty;
@@ -37,6 +36,7 @@
         public string FirstNameStudent { get; set; } = string.Empty;
         public string LastNameStudent { get; set; } = string.Empty;
         public string MiddleNameStudent { get; set; } = string.Empty;
+        public string PhotoUrl { get; set; } = string.Empty;
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Server;
+namespace Server.DatabaseModel;
 
 public partial class Person
 {
@@ -23,7 +23,7 @@ public partial class Person
 
     public string? PhotoUrl { get; set; }
 
-    public int? Schoolid { get; set; }
+    public int Schoolid { get; set; }
 
     public virtual ICollection<ClassStudent> ClassStudents { get; set; } = new List<ClassStudent>();
 
@@ -33,7 +33,7 @@ public partial class Person
 
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
-    public virtual School? School { get; set; }
+    public virtual School School { get; set; } = null!;
 
     public virtual ICollection<School> Schools { get; set; } = new List<School>();
 

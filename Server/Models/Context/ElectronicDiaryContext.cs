@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Server.DatabaseModel;
 
-namespace Server;
+namespace Server.Context;
 
 public partial class ElectronicDiaryContext : DbContext
 {
@@ -55,17 +56,11 @@ public partial class ElectronicDiaryContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
-            entity.Property(e => e.SchoolId).HasColumnName("school_id");
 
             entity.HasOne(d => d.ClassTeacher).WithMany(p => p.Classes)
                 .HasForeignKey(d => d.ClassTeacherId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("classes_class_teacher_id_fkey");
-
-            entity.HasOne(d => d.School).WithMany(p => p.Classes)
-                .HasForeignKey(d => d.SchoolId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("classes_school_id_fkey");
         });
 
         modelBuilder.Entity<ClassStudent>(entity =>

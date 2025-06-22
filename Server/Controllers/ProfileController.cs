@@ -19,7 +19,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("profile")]
-        [AuthorizeRole("Admin", "Teacher", "Student", "Parent", "Director")]
+        [AuthorizeRole("Teacher", "Student", "Parent", "Director")]
         public async Task<ActionResult<ProfileResponseDTO>> GetProfile()
         {
             var profile = await _profileService.GetProfileInfo();
@@ -27,7 +27,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("school")]
-        [AuthorizeRole("Admin", "Teacher", "Student", "Parent", "Director")]
+        [AuthorizeRole("Teacher", "Student", "Parent", "Director")]
         public async Task<ActionResult<SchoolResponseDTO>> GetSchool()
         {
             var school = await _profileService.GetSchoolInfo();
@@ -35,7 +35,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("class")]
-        [AuthorizeRole("Admin", "Student", "Parent")]
+        [AuthorizeRole("Student", "Parent")]
         public async Task<ActionResult<ClassResponseDTO>> GetClass()
         {
             var classes = await _profileService.GetClassInfo();

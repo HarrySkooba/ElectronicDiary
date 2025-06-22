@@ -1,4 +1,6 @@
-﻿namespace Server.Models.Context
+﻿using Server.Context;
+
+namespace Server.Models.Context
 {
    internal class DB
     {

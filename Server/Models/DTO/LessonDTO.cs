@@ -27,6 +27,7 @@
         public string? Homework { get; set; }
         public List<GradeDTO> Grades { get; set; } = new();
     }
+
     public class LessonViewDto
     {
         public int Id { get; set; }

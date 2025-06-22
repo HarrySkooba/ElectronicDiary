@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Context;
+using Server.DatabaseModel;
 using Server.Models.DTO;
 using Server.Utils;
 
@@ -141,11 +143,7 @@ namespace Server.Lessons
             var existingLesson = await _context.Lessons
                 .FirstOrDefaultAsync(l => l.ScheduleId == schedule.Id);
 
-            if (existingLesson != null)
-            {
-                await UpdateLessonFromScheduleAsync(schedule);
-                return;
-            }
+            if (existingLesson != null) return;
 
             var lesson = new Lesson
             {
@@ -157,26 +155,21 @@ namespace Server.Lessons
             _context.Lessons.Add(lesson);
             await _context.SaveChangesAsync();
 
-            var studentIds = await _context.ClassStudents
+            var students = await _context.ClassStudents
                 .Where(cs => cs.ClassId == schedule.ClassId)
                 .Select(cs => cs.StudentId)
-                .Distinct()
                 .ToListAsync();
 
-            foreach (var studentId in studentIds)
+            foreach (var studentId in students)
             {
-                if (!await _context.Grades.AnyAsync(g =>
-                    g.LessonId == lesson.Id && g.StudentId == studentId))
+                _context.Grades.Add(new Grade
                 {
-                    _context.Grades.Add(new Grade
-                    {
-                        LessonId = lesson.Id,
-                        StudentId = studentId,
-                        WasPresent = true,
-                        Score = null,
-                        Comment = string.Empty
-                    });
-                }
+                    LessonId = lesson.Id,
+                    StudentId = studentId,
+                    WasPresent = true, 
+                    Score = null,      
+                    Comment = string.Empty
+                });
             }
 
             await _context.SaveChangesAsync();
@@ -292,7 +285,6 @@ namespace Server.Lessons
                 return OperationResult.Fail($"Ошибка при обновлении оценок: {ex.Message}");
             }
         }
-
 
         private string FormatTeacherName(Person teacher)
         {

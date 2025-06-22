@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Context;
 using Server.Models.DTO;
 using Server.Utils;
-
 
 namespace Server.Profile
 {
@@ -52,17 +52,16 @@ namespace Server.Profile
                 throw new UnauthorizedAccessException("Пользователь не авторизован");
 
             var user = await _context.Users
-                .Include(u => u.Person.Schools)
-                .FirstOrDefaultAsync(u => u.Login == login);
+       .Include(u => u.Person)
+           .ThenInclude(p => p.School)
+               .ThenInclude(s => s.Director)
+       .FirstOrDefaultAsync(u => u.Login == login);
 
             if (user == null)
                 throw new KeyNotFoundException("Пользователь не найден");
 
             if (user?.Person == null)
                 throw new KeyNotFoundException("Данные пользователя не найдены");
-
-            if (user.Person.School == null)
-                throw new KeyNotFoundException("Школа не найдена");
 
             return new SchoolResponseDTO
             {
@@ -93,7 +92,6 @@ namespace Server.Profile
                 .Include(cs => cs.Class)
                     .ThenInclude(c => c.ClassTeacher)
                 .Include(cs => cs.Class)
-                    .ThenInclude(c => c.School)
                 .Include(cs => cs.Student)
                 .FirstOrDefaultAsync(cs =>
                     cs.StudentId == user.Person.Id);
@@ -116,6 +114,7 @@ namespace Server.Profile
             FirstNameStudent = user.Person.FirstName.GetValueOrDefault(),
             LastNameStudent = user.Person.LastName.GetValueOrDefault(),
             MiddleNameStudent = user.Person.MiddleName.GetValueOrDefault(),
+            PhotoUrl = user.Person.PhotoUrl.GetValueOrDefault(),
             }
             };
 
@@ -124,7 +123,8 @@ namespace Server.Profile
                 Id = cs.StudentId,
                 FirstNameStudent = cs.Student.FirstName.GetValueOrDefault(),
                 LastNameStudent = cs.Student.LastName.GetValueOrDefault(),
-                MiddleNameStudent = cs.Student.MiddleName.GetValueOrDefault()
+                MiddleNameStudent = cs.Student.MiddleName.GetValueOrDefault(),
+                PhotoUrl = cs.Student.PhotoUrl.GetValueOrDefault(),
             }));
 
             return new ClassResponseDTO

@@ -1,0 +1,943 @@
+﻿<Page x:Class="Client.Pag.AdminPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Client.Pag"
+      mc:Ignorable="d" 
+      d:DesignHeight="832.16" d:DesignWidth="1341.163"
+      Background="#FF0F1C2E">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#FF1A2A4A"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#FF2A3B5E"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#FF4A90E2"/>
+        <SolidColorBrush x:Key="LightText" Color="#FFF0F0F0"/>
+        <SolidColorBrush x:Key="DarkText" Color="#FF333333"/>
+        <SolidColorBrush x:Key="ErrorColor" Color="#FFE74C3C"/>
+        <SolidColorBrush x:Key="CurrentDayColor" Color="#FF3A4B6E"/>
+
+        <Style x:Key="ModernTabItem" TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid>
+                            <Border Name="Border" Background="Transparent" 
+                                    Margin="5,0,5,0" Padding="15,10">
+                                <ContentPresenter x:Name="ContentSite"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    ContentSource="Header"/>
+                            </Border>
+                            <Rectangle x:Name="Underline" Height="3" Fill="{StaticResource AccentColor}" 
+                                       VerticalAlignment="Bottom" Margin="10,0,10,0"
+                                       Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Underline" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" 
+                                        Value="{StaticResource LightText}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" 
+                                        Value="#AAFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" 
+                                        Value="{StaticResource LightText}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+            <Setter Property="Padding" Value="10,5"/>
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="ListHeaderStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="ListItemStyle" TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="Transparent" Padding="10,8" CornerRadius="4">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A3A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ClassItemStyle" TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="Transparent" Padding="10,8" CornerRadius="4">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A3A"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ProfileLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#AAFFFFFF"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <Style x:Key="ProfileValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,2,0,15"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+        </Style>
+
+        <Style x:Key="ProfileValueTB" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,2,0,15"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+
+        <Style x:Key="AdminButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A7BC8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SearchTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="Height" Value="36"/>
+        </Style>
+
+        <Style x:Key="AdminTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="AdminComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ClassButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                        CornerRadius="5"
+                        BorderThickness="1"
+                        BorderBrush="{StaticResource AccentColor}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StudentListItemStyle" TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="{TemplateBinding Background}" 
+                        Padding="10,8" 
+                        CornerRadius="4">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A3A"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DayTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource LightText}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCurrentDay}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LessonItemStyle" TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="Transparent" Padding="5">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A3A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DayCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCurrentDay}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource CurrentDayColor}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="LessonTemplate">
+            <Border BorderBrush="#3A3A3A" BorderThickness="0,0,0,1" Padding="0,5">
+                <StackPanel>
+                    <TextBlock Text="{Binding Subject}" 
+                               Foreground="{StaticResource LightText}"
+                               FontSize="14"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding Teacher}" 
+                               Foreground="#AAFFFFFF"
+                               FontSize="12"
+                               Margin="0,2,0,0"/>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Кабинет:" 
+                                   Foreground="#AAFFFFFF"
+                                   FontSize="12"
+                                   Grid.Column="0"/>
+
+                        <TextBlock Text="{Binding Room}" 
+                                   Foreground="{StaticResource LightText}"
+                                   FontSize="12"
+                                   Grid.Column="1"
+                                   Margin="5,0,0,0"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Время:" 
+                                   Foreground="#AAFFFFFF"
+                                   FontSize="12"
+                                   Grid.Column="0"/>
+
+                        <TextBlock Margin="5,-2,0,0" Grid.Column="1" Foreground="{StaticResource LightText}" FontSize="14">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0:hh\:mm} - {1:hh\:mm}">
+                                    <Binding Path="Start_Time"/>
+                                    <Binding Path="End_Time"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <DataTemplate x:Key="SubjectTeacherItemTemplate">
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding TeacherName}" Foreground="{StaticResource LightText}" Grid.Column="0"/>
+                <TextBlock Text="{Binding SubjectName}" Foreground="{StaticResource LightText}" Grid.Column="1"/>
+                <TextBlock Text="{Binding ClassName}" Foreground="{StaticResource LightText}" Grid.Column="2"/>
+                <TextBlock Text="{Binding AcademicYear}" Foreground="{StaticResource LightText}" Grid.Column="3"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="4" HorizontalAlignment="Right">
+                    <Button Content="Изменить" Style="{StaticResource AdminButton}" Width="100" Margin="0,0,5,0" Click="EditSubjectTeacher_Click"/>
+                    <Button Content="Удалить" Style="{StaticResource AdminButton}" Width="100" Background="{StaticResource ErrorColor}" Click="DeleteSubjectTeacher_Click"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SubjectTeacherHeaderTemplate">
+            <Grid Margin="0,0,0,10" Background="{StaticResource PrimaryColor}" Height="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Учитель" Style="{StaticResource ListHeaderStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Предмет" Style="{StaticResource ListHeaderStyle}" Grid.Column="1" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Класс" Style="{StaticResource ListHeaderStyle}" Grid.Column="2" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Год" Style="{StaticResource ListHeaderStyle}" Grid.Column="3" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Действия" Style="{StaticResource ListHeaderStyle}" Grid.Column="4" VerticalAlignment="Center" Margin="10,0"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="UserItemTemplate">
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding Login}" Foreground="{StaticResource LightText}" Grid.Column="0"/>
+                <TextBlock Text="{Binding RoleName}" Foreground="{StaticResource LightText}" Grid.Column="1"/>
+                <TextBlock Text="{Binding PersonName}" Foreground="{StaticResource LightText}" Grid.Column="2"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="3" HorizontalAlignment="Right">
+                    <Button Content="Изменить" Style="{StaticResource AdminButton}" Width="100" Click="EditUser_Click"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PersonItemTemplate">
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding PersonName}" Foreground="{StaticResource LightText}" Grid.Column="0"/>
+                <TextBlock Text="{Binding BirthDate, StringFormat={}{0:dd.MM.yyyy}}" Foreground="{StaticResource LightText}" Grid.Column="1"/>
+                <TextBlock Text="{Binding Phone}" Foreground="{StaticResource LightText}" Grid.Column="2"/>
+                <TextBlock Text="{Binding Email}" Foreground="{StaticResource LightText}" Grid.Column="3"/>
+                <TextBlock Text="{Binding Address}" Foreground="{StaticResource LightText}" Grid.Column="4"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="5" HorizontalAlignment="Left">
+                    <Button Content="Изменить" Style="{StaticResource AdminButton}" Width="140" Margin="0,0,5,0" Click="EditPerson_Click"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="UserHeaderTemplate">
+            <Grid Margin="0,0,0,10" Background="{StaticResource PrimaryColor}" Height="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Логин" Style="{StaticResource ListHeaderStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Роль" Style="{StaticResource ListHeaderStyle}" Grid.Column="1" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="ФИО" Style="{StaticResource ListHeaderStyle}" Grid.Column="2" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Действия" Style="{StaticResource ListHeaderStyle}" Grid.Column="3" VerticalAlignment="Center" Margin="10,0"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PersonHeaderTemplate">
+            <Grid Margin="0,0,0,10" Background="{StaticResource PrimaryColor}" Height="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="ФИО" Style="{StaticResource ListHeaderStyle}" Grid.Column="0" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Дата рождения" Style="{StaticResource ListHeaderStyle}" Grid.Column="1" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Телефон" Style="{StaticResource ListHeaderStyle}" Grid.Column="2" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Email" Style="{StaticResource ListHeaderStyle}" Grid.Column="3" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Адрес" Style="{StaticResource ListHeaderStyle}" Grid.Column="4" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBlock Text="Действия" Style="{StaticResource ListHeaderStyle}" Grid.Column="5" VerticalAlignment="Center" Margin="10,0"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <TabControl x:Name="MainTabControl" Background="Transparent" BorderThickness="0" Padding="20">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem" BasedOn="{StaticResource ModernTabItem}"/>
+            </TabControl.ItemContainerStyle>
+
+            <TabItem Header="Аккаунты">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Список аккаунтов" Style="{StaticResource SectionTitleStyle}"/>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Margin="0,0,10,0" 
+         Style="{StaticResource SearchTextBox}"
+         Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}"
+         Tag="Поиск..."
+         x:Name="UserSearchBox"
+         GotFocus="UserSearchBox_GotFocus"
+         LostFocus="UserSearchBox_LostFocus">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding SearchUsersCommand}"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+
+                                    <Button Grid.Column="1" Content="Добавить аккаунт" 
+                                            Style="{StaticResource AdminButton}" Click="AddUser_Button_Click"/>
+                                </Grid>
+
+                                <ContentControl ContentTemplate="{StaticResource UserHeaderTemplate}"/>
+
+                                <ListView Margin="0,5,0,0" 
+          ItemsSource="{Binding FilteredUsers}" 
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+          Background="Transparent"
+          BorderThickness="0"
+          ItemContainerStyle="{StaticResource ListItemStyle}"
+          ItemTemplate="{StaticResource UserItemTemplate}"
+          MinHeight="300"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Персоны">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Список персон" Style="{StaticResource SectionTitleStyle}"/>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Margin="0,0,10,0" 
+         Style="{StaticResource SearchTextBox}"
+         Text="{Binding PersonSearchText, UpdateSourceTrigger=PropertyChanged}"
+         Tag="Поиск..."
+         x:Name="PersonSearchBox"
+         GotFocus="PersonSearchBox_GotFocus"
+         LostFocus="PersonSearchBox_LostFocus">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding SearchPersonsCommand}"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+
+                                    <Button Grid.Column="1" Content="Добавить персону" 
+                                            Style="{StaticResource AdminButton}" Click="AddPerson_Button_Click"/>
+                                </Grid>
+
+                                <ContentControl ContentTemplate="{StaticResource PersonHeaderTemplate}"/>
+
+                                <ListView Margin="0,5,0,0" 
+          ItemsSource="{Binding FilteredPersons}" 
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+          Background="Transparent"
+          BorderThickness="0"
+          ItemContainerStyle="{StaticResource ListItemStyle}"
+          ItemTemplate="{StaticResource PersonItemTemplate}"
+          MinHeight="300"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Школа" Height="41" VerticalAlignment="Top">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                            <Border Style="{StaticResource CardStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="Информация о школе" Style="{StaticResource SectionTitleStyle}"/>
+
+                                    <TextBlock Text="Название:" Style="{StaticResource ProfileLabel}"/>
+                                    <TextBox x:Name="SchoolNameTB" Text="{Binding School.Name}" Style="{StaticResource ProfileValueTB}"/>
+
+                                    <TextBlock Text="Адрес:" Style="{StaticResource ProfileLabel}"/>
+                                    <TextBox x:Name="SchoolAdressTB" Text="{Binding School.Address}" Style="{StaticResource ProfileValueTB}"/>
+
+                                    <TextBlock Text="Телефон:" Style="{StaticResource ProfileLabel}"/>
+                                    <TextBox x:Name="SchoolPhoneTB"  Text="{Binding School.Phone}" Style="{StaticResource ProfileValueTB}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                            <Border Style="{StaticResource CardStyle}" Height="Auto">
+                                <StackPanel>
+                                    <TextBlock Text="Дополнительная информация" Style="{StaticResource SectionTitleStyle}"/>
+
+                                    <TextBlock Text="Директор:" Style="{StaticResource ProfileLabel}"/>
+                                    <ComboBox x:Name="SchoolDirectorCB"  ItemsSource="{Binding Directors, Mode=OneWay}" 
+                                     SelectedItem="{Binding SelectedDirector, Mode=TwoWay}"
+                                     DisplayMemberPath="DirectorName"
+                                     IsSynchronizedWithCurrentItem="True"
+                                     Background="{StaticResource PrimaryColor}"
+                                     Foreground="Black"
+                                     Margin="0,5,0,15"/>
+
+                                    <TextBlock Text="Сайт:" Style="{StaticResource ProfileLabel}"/>
+                                    <TextBox x:Name="SchoolWebsiteTB" Text="{Binding School.Website}" Style="{StaticResource ProfileValueTB}"/>
+
+                                    <Button Content="Сохранить изменения" 
+                                            Style="{StaticResource AdminButton}"
+                                            HorizontalAlignment="Right" Margin="0,20,0,0" Click="EditSchool_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Классы">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource CardStyle}" Grid.Column="0" Margin="0,0,15,0">
+                            <StackPanel>
+                                <TextBlock Text="Список классов" Style="{StaticResource SectionTitleStyle}"/>
+
+                                <Button Content="Добавить класс" 
+                            Style="{StaticResource AdminButton}"
+                            Margin="0,0,0,15" 
+                            Click="AddClass_Button_Click"/>
+
+                                <ItemsControl ItemsSource="{Binding Classes}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  Background="Transparent"
+                                  BorderThickness="0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding Name}"
+                                        Style="{StaticResource ClassButtonStyle}"
+                                        Command="{Binding DataContext.SelectClassCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Margin="5"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource CardStyle}" Grid.Column="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0">
+                                    <TextBlock Text="Класс:" Style="{StaticResource ProfileLabel}"/>
+                                    <TextBox Text="{Binding SelectedClass.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource AdminTextBox}" 
+                                 Margin="0,0,0,10"/>
+
+                                    <Grid Margin="0,15,0,15">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="Год обучения:" 
+                                       Grid.Column="0" Grid.Row="0" 
+                                       Style="{StaticResource ProfileLabel}"/>
+                                        <TextBox Text="{Binding SelectedClass.AcademicYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Grid.Column="1" Grid.Row="0"
+                                     Style="{StaticResource AdminTextBox}"
+                                     Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="Классный руководитель:" 
+                                       Grid.Column="0" Grid.Row="1" 
+                                       Style="{StaticResource ProfileLabel}"/>
+                                        <ComboBox ItemsSource="{Binding Teachers}" 
+                                      SelectedValue="{Binding SelectedClass.ClassTeacherId, Mode=TwoWay}"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="FullName"
+                                      Style="{StaticResource AdminComboBox}"
+                                      Grid.Column="1" Grid.Row="1"/>
+                                    </Grid>
+
+                                    <Button Content="Сохранить изменения" 
+                                Style="{StaticResource AdminButton}"
+                                HorizontalAlignment="Right"
+                                Click="SaveClassChanges_Click"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                                    <TextBlock Text="Ученики в классе" Style="{StaticResource ListHeaderStyle}"/>
+
+                                    <ListView x:Name="StudentsListView" 
+          ItemsSource="{Binding Students}" 
+          SelectedItem="{Binding SelectedStudent, Mode=TwoWay}"
+          SelectionMode="Single"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
+          Background="Transparent"
+          BorderThickness="0"
+          ItemContainerStyle="{StaticResource StudentListItemStyle}"
+          MinHeight="200">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Border Width="30" Height="30" CornerRadius="15" 
+                        BorderBrush="{StaticResource AccentColor}" BorderThickness="1"
+                        Margin="0,0,10,0">
+                                                        <Image Source="{Binding PhotoUrl}" Stretch="UniformToFill">
+                                                            <Image.Clip>
+                                                                <EllipseGeometry RadiusX="15" RadiusY="15" Center="15,15"/>
+                                                            </Image.Clip>
+                                                        </Image>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding FullName}" 
+                           VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                        <Button Content="Добавить ученика" 
+                                    Style="{StaticResource AdminButton}"
+                                    Margin="0,0,10,0" 
+                                    Click="AddStudent_Button_Click"/>
+
+                                        <Button Content="Удалить выбранного" 
+                                    Style="{StaticResource AdminButton}"
+                                    Background="{StaticResource ErrorColor}"
+                                    Command="{Binding RemoveStudentCommand}"
+                                    CommandParameter="{Binding SelectedStudent}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Учителя">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Список учителей" Style="{StaticResource SectionTitleStyle}"/>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Margin="0,0,10,0" 
+                                 Style="{StaticResource SearchTextBox}"
+                                 Text="{Binding SubjectTeacherSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Tag="Поиск..."
+                                 x:Name="SubjectTeacherSearchBox"
+                                 GotFocus="SubjectTeacherSearchBox_GotFocus"
+                                 LostFocus="SubjectTeacherSearchBox_LostFocus">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding SearchSubjectTeachersCommand}"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+
+                                    <Button Grid.Column="1" Content="Добавить связь" 
+                                Style="{StaticResource AdminButton}" 
+                                Click="AddSubjectTeacher_Button_Click"/>
+                                </Grid>
+
+                                <ContentControl ContentTemplate="{StaticResource SubjectTeacherHeaderTemplate}"/>
+
+                                <ListView Margin="0,5,0,0" 
+                              ItemsSource="{Binding FilteredSubjectTeachers}" 
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              ItemContainerStyle="{StaticResource ListItemStyle}"
+                              ItemTemplate="{StaticResource SubjectTeacherItemTemplate}"
+                              MinHeight="300"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Расписание">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Управление расписанием" Style="{StaticResource SectionTitleStyle}"/>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                        <ComboBox x:Name="ScheduleClassComboBox" 
+                                      ItemsSource="{Binding Classes}"
+                                      DisplayMemberPath="Name"
+                                      SelectedValuePath="Id"
+                                      SelectedValue="{Binding SelectedClassForSchedule, Mode=TwoWay}"
+                                      Style="{StaticResource AdminComboBox}"
+                                      MinWidth="150"
+                                      Margin="0,0,10,0"/>
+
+                                        <Button Content="Показать расписание" 
+                                    Style="{StaticResource AdminButton}"
+                                    Click="ShowSchedule_Click"/>
+                                    </StackPanel>
+
+                                    <Button Grid.Column="1" Content="Добавить занятие" 
+                                Style="{StaticResource AdminButton}"
+                                Margin="0,0,10,0"
+                                Click="AddLesson_Click"/>
+
+                                    <Button Grid.Column="2" Content="Дублировать расписание" 
+                                Style="{StaticResource AdminButton}"
+                                Click="BulkEditSchedule_Click"/>
+                                </Grid>
+
+                                <Border Background="#80000000" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"
+                            Panel.ZIndex="1" Margin="0,10,0,0">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ProgressBar IsIndeterminate="True" Width="200" Height="20"/>
+                                        <TextBlock Text="Загрузка расписания..." 
+                                       Foreground="White"
+                                       Margin="0,10,0,0"
+                                       HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <TextBlock Text="{Binding WeekRangeText}" 
+                               HorizontalAlignment="Center" 
+                               Foreground="{StaticResource LightText}"
+                               Margin="0,10,0,5"
+                               FontSize="14"/>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5">
+                                    <Button Content="◄" 
+                                Style="{StaticResource AdminButton}"
+                                Padding="10,5"
+                                Click="PrevWeekButton_Click"
+                                ToolTip="Предыдущая неделя"/>
+
+                                    <Button Content="Текущая неделя" 
+                                Style="{StaticResource AdminButton}"
+                                Margin="10,0"
+                                Padding="10,5"
+                                Click="CurrentWeekButton_Click"/>
+
+                                    <Button Content="►" 
+                                Style="{StaticResource AdminButton}"
+                                Padding="10,5"
+                                Click="NextWeekButton_Click"
+                                ToolTip="Следующая неделя"/>
+                                </StackPanel>
+
+                                <ScrollViewer Margin="0,10,0,0" 
+                                  VerticalScrollBarVisibility="Auto" 
+                                  HorizontalScrollBarVisibility="Disabled">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <ItemsControl ItemsSource="{Binding Days}" Grid.ColumnSpan="7">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="7" Rows="1"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Style="{StaticResource DayCardStyle}" Margin="5">
+                                                        <DockPanel LastChildFill="True">
+                                                            <TextBlock DockPanel.Dock="Top" 
+                                                           Text="{Binding DayName}" 
+                                                           Style="{StaticResource DayTitleStyle}"/>
+                                                            <TextBlock DockPanel.Dock="Top" 
+                                                           Text="{Binding Date, StringFormat='dd.MM'}" 
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="#AAFFFFFF"
+                                                           FontSize="12"
+                                                           Margin="0,0,0,5"/>
+                                                            <ListView ItemsSource="{Binding Lessons}"
+                                                          SelectedItem="{Binding SelectedLesson}"
+                                                          ItemTemplate="{StaticResource LessonTemplate}"
+                                                          ItemContainerStyle="{StaticResource LessonItemStyle}"
+                                                          Background="Transparent"
+                                                          BorderThickness="0"
+                                                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                                <ListView.ContextMenu>
+                                                                    <ContextMenu>
+                                                                        <MenuItem Header="Редактировать" Click="EditLessonContext_Click"/>
+                                                                    </ContextMenu>
+                                                                </ListView.ContextMenu>
+                                                            </ListView>
+                                                        </DockPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

@@ -12,6 +12,7 @@
         public TimeOnly End_Time { get; set; }
         public string ClassName { get; set; } = string.Empty;
         public DateOnly Date { get; set; }
+        public bool IsCurrentDay { get; set; }
     }
 
     public class ScheduleDayDto
@@ -20,5 +21,17 @@
         public int DayOfWeek { get; set; }
         public string DayName { get; set; } = string.Empty;
         public List<ScheduleDTO> Lessons { get; set; } = new();
+    }
+
+    public class ClassTimeSlotDTO
+    {
+        public int LessonNumber { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+        public TimeSpan? BreakAfterDuration { get; set; }
+
+        public string TimeSlotDisplay =>
+            $"{LessonNumber} урок: {StartTime:HH\\:mm} - {EndTime:HH\\:mm}" +
+            (BreakAfterDuration.HasValue ? $" (перемена {BreakAfterDuration.Value.TotalMinutes} мин)" : "");
     }
 }

@@ -14,20 +14,6 @@ namespace Server.Controllers
             _authService = authService;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<UserResponseDto>> Register(UserRegisterDto request)
-        {
-            try
-            {
-                var response = await _authService.Register(request);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost("login")]
         public async Task<ActionResult<UserResponseDto>> Login(UserLoginDto request)
         {

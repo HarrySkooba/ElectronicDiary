@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Server.Context;
+using Server.DatabaseModel;
 using Server.Models.DTO;
 
 namespace Server
@@ -17,37 +19,6 @@ namespace Server
         {
             _context = context;
             _config = config;
-        }
-
-        public async Task<UserResponseDto> Register(UserRegisterDto request)
-        {
-            if (await _context.Users.AnyAsync(u => u.Login == request.Login))
-                throw new Exception("Пользователь с таким логином уже существует");
-
-            CreatePasswordHash(request.Password, out byte[] hash, out byte[] salt);
-
-            var user = new User
-            {
-                Login = request.Login,
-                PasswordHash = hash,
-                RoleId = request.RoleId,
-                PersonId = request.PersonId,
-                Salt = salt
-            };
-
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            await _context.Entry(user)
-            .Reference(u => u.Role)
-            .LoadAsync();
-
-            return new UserResponseDto
-            {
-                Login = user.Login,
-                RoleName = user.Role.Name,
-                Token = CreateToken(user)
-            };
         }
 
         public async Task<UserResponseDto> Login(UserLoginDto request)

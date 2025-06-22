@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Attributes;
+using Server.DatabaseModel;
 using Server.Lessons;
+using Server.Models.DTO;
 
 namespace Server.Controllers
 {
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
     public class LessonsController : Controller
     {
         private readonly IGradeService _gradeService;
@@ -17,7 +22,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("from-schedule")]
-        [AuthorizeRole("Admin", "Teacher")]
+        [AuthorizeRole("Admin")]
         public async Task<IActionResult> CreateFromSchedule([FromBody] Schedule schedule)
         {
             try
@@ -33,7 +38,7 @@ namespace Server.Controllers
         }
 
         [HttpPut("from-schedule")]
-        [AuthorizeRole("Admin", "Teacher")]
+        [AuthorizeRole("Admin")]
         public async Task<IActionResult> UpdateFromSchedule([FromBody] Schedule schedule)
         {
             try
@@ -47,6 +52,23 @@ namespace Server.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpPut("update-grades")]
+        [AuthorizeRole("Teacher", "Director")]
+        public async Task<IActionResult> UpdateGrades([FromBody] UpdateGradesDTO updateDto)
+        {
+            try
+            {
+                var result = await _gradeService.UpdateGradesAsync(updateDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при обновлении оценки для ученика");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
 
         [HttpGet("student")]
         [AuthorizeRole("Student", "Parent")]
@@ -67,7 +89,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("teacher")]
-        [AuthorizeRole("Admin", "Teacher", "Director")]
+        [AuthorizeRole("Teacher", "Director")]
         public async Task<IActionResult> GetForTeacher(
             [FromQuery] int? classId = null,
             [FromQuery] int? subjectId = null,
